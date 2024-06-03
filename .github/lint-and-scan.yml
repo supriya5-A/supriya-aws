@@ -1,0 +1,37 @@
+name: Lint and Security Scan
+
+on:
+  push:
+    branches:
+      - 'main'
+ 
+
+jobs:
+  lint:
+    name: Linting Service
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run Linter
+      run: |
+        npm install
+        npm run lint
+
+  security_scan:
+    name: Security Scan with SonarQube
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: SonarQube Scan
+      uses: SonarSource/sonarcloud-github-action@v1.5
+      with:
+        projectBaseDir: .
+        args: >
+          -Dsonar.projectKey=<your-project-key>
+          -Dsonar.organization=<your-organization>
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
